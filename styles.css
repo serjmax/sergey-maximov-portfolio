@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Repro";
+  src: url("./public/fonts/Repro-Regular_web.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --background: #c3c5cc;
@@ -14,7 +22,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--text);
-  font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Repro", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
