@@ -12,6 +12,7 @@
   --text: #050505;
   --accent: #fff;
   --radius: 24px;
+  --background-shift: 0px;
 }
 
 * { box-sizing: border-box; }
@@ -19,6 +20,8 @@
 html { scroll-behavior: smooth; }
 
 body {
+  position: relative;
+  isolation: isolate;
   margin: 0;
   background: var(--background);
   color: var(--text);
@@ -27,9 +30,37 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::before {
+  inset: -12%;
+  background:
+    radial-gradient(ellipse 62% 42% at 18% 8%, rgba(255, 255, 255, .16), transparent 68%),
+    radial-gradient(ellipse 54% 46% at 86% 38%, rgba(100, 108, 125, .11), transparent 72%),
+    radial-gradient(ellipse 64% 48% at 32% 86%, rgba(238, 240, 244, .13), transparent 70%);
+  transform: translate3d(0, calc(var(--background-shift) * -1), 0);
+  will-change: transform;
+}
+
+body::after {
+  inset: 0;
+  background: url("./public/images/noise.svg") repeat;
+  background-size: 180px 180px;
+  mix-blend-mode: soft-light;
+  opacity: .14;
+}
+
 a { color: inherit; }
 
 .page {
+  position: relative;
+  z-index: 1;
   width: min(1280px, calc(100% - 48px));
   margin: 0 auto;
   padding: 76px 0 72px;
@@ -160,6 +191,7 @@ footer {
 .reveal.is-visible { opacity: 1; transform: none; }
 
 @media (max-width: 760px) {
+  body::before { transform: none; }
   .page { width: calc(100% - 24px); padding: 32px 0 36px; }
   .socials { flex-wrap: wrap; gap: 14px 28px; font-size: 15px; }
   .hero { margin: 76px 0 72px; }
@@ -179,6 +211,7 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  body::before { transform: none; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }

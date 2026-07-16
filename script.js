@@ -1,4 +1,21 @@
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const desktopViewport = window.matchMedia('(min-width: 761px)');
+
+if (!reducedMotion && desktopViewport.matches) {
+  let backgroundTicking = false;
+
+  const updateBackground = () => {
+    const shift = Math.min(36, window.scrollY * 0.018);
+    document.documentElement.style.setProperty('--background-shift', `${shift}px`);
+    backgroundTicking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (backgroundTicking) return;
+    backgroundTicking = true;
+    window.requestAnimationFrame(updateBackground);
+  }, { passive: true });
+}
 
 if (reducedMotion || !('IntersectionObserver' in window)) {
   document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-visible'));
