@@ -1,5 +1,39 @@
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const desktopViewport = window.matchMedia('(min-width: 761px)');
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+if (!reducedMotion && finePointer.matches) {
+  const cursorLight = document.querySelector('.cursor-light');
+  let cursorX = window.innerWidth / 2;
+  let cursorY = window.innerHeight * 0.35;
+  let lightX = cursorX;
+  let lightY = cursorY;
+  let cursorFrame;
+
+  const animateCursorLight = () => {
+    lightX += (cursorX - lightX) * 0.14;
+    lightY += (cursorY - lightY) * 0.14;
+    cursorLight.style.setProperty('--cursor-x', `${lightX}px`);
+    cursorLight.style.setProperty('--cursor-y', `${lightY}px`);
+
+    if (Math.abs(cursorX - lightX) > 0.2 || Math.abs(cursorY - lightY) > 0.2) {
+      cursorFrame = window.requestAnimationFrame(animateCursorLight);
+    } else {
+      cursorFrame = undefined;
+    }
+  };
+
+  window.addEventListener('pointermove', (event) => {
+    cursorX = event.clientX;
+    cursorY = event.clientY;
+    document.body.classList.add('has-cursor-light');
+    if (!cursorFrame) cursorFrame = window.requestAnimationFrame(animateCursorLight);
+  }, { passive: true });
+
+  document.documentElement.addEventListener('mouseleave', () => {
+    document.body.classList.remove('has-cursor-light');
+  });
+}
 
 if (!reducedMotion && desktopViewport.matches) {
   let backgroundTicking = false;

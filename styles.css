@@ -57,6 +57,25 @@ body::after {
   opacity: .26;
 }
 
+.cursor-light {
+  --cursor-x: 50vw;
+  --cursor-y: 35vh;
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(circle 280px at var(--cursor-x) var(--cursor-y),
+      rgba(255, 255, 255, .38) 0%,
+      rgba(247, 250, 255, .20) 38%,
+      rgba(255, 255, 255, 0) 74%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+  will-change: background;
+}
+
+body.has-cursor-light .cursor-light { opacity: 1; }
+
 a { color: inherit; }
 
 .page {
@@ -206,6 +225,7 @@ footer {
 }
 
 @media (hover: none) {
+  .cursor-light { display: none; }
   .project__caption { top: auto; bottom: 16px; left: 18px; width: auto; text-align: left; opacity: 1; transform: none; }
   .project::after { opacity: .12; background: linear-gradient(transparent 55%, rgba(0,0,0,.65)); }
 }
@@ -213,6 +233,7 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   body::before { transform: none; }
+  .cursor-light { display: none; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
