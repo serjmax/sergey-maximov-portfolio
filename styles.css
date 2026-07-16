@@ -60,17 +60,28 @@ body::after {
 .cursor-light {
   --cursor-x: 50vw;
   --cursor-y: 35vh;
+  --trail-x-1: 50vw;
+  --trail-y-1: 35vh;
+  --trail-x-2: 50vw;
+  --trail-y-2: 35vh;
   position: fixed;
   z-index: 0;
   inset: 0;
   background:
-    radial-gradient(circle 280px at var(--cursor-x) var(--cursor-y),
-      rgba(255, 255, 255, .38) 0%,
-      rgba(247, 250, 255, .20) 38%,
-      rgba(255, 255, 255, 0) 74%);
+    radial-gradient(ellipse 840px 610px at var(--cursor-x) var(--cursor-y),
+      rgba(255, 255, 255, .29) 0%,
+      rgba(247, 250, 255, .15) 38%,
+      rgba(255, 255, 255, 0) 76%),
+    radial-gradient(ellipse 960px 650px at var(--trail-x-1) var(--trail-y-1),
+      rgba(246, 249, 255, .17) 0%,
+      rgba(239, 244, 255, .08) 42%,
+      rgba(255, 255, 255, 0) 78%),
+    radial-gradient(ellipse 1080px 700px at var(--trail-x-2) var(--trail-y-2),
+      rgba(255, 248, 242, .10) 0%,
+      rgba(255, 255, 255, 0) 76%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 420ms ease;
+  transition: opacity 600ms ease;
   will-change: background;
 }
 
@@ -143,6 +154,8 @@ em { color: var(--accent); font-style: normal; }
   overflow: hidden;
   border-radius: var(--radius);
   background: #dedede;
+  color: inherit;
+  text-decoration: none;
   outline: none;
 }
 

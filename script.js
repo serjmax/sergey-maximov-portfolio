@@ -8,15 +8,40 @@ if (!reducedMotion && finePointer.matches) {
   let cursorY = window.innerHeight * 0.35;
   let lightX = cursorX;
   let lightY = cursorY;
+  let trailX1 = cursorX;
+  let trailY1 = cursorY;
+  let trailX2 = cursorX;
+  let trailY2 = cursorY;
   let cursorFrame;
+  let previousTime = performance.now();
 
-  const animateCursorLight = () => {
-    lightX += (cursorX - lightX) * 0.14;
-    lightY += (cursorY - lightY) * 0.14;
+  const animateCursorLight = (time) => {
+    const delta = Math.min(50, time - previousTime);
+    previousTime = time;
+    const leadEase = 1 - Math.exp(-delta / 300);
+    const trailEase1 = 1 - Math.exp(-delta / 620);
+    const trailEase2 = 1 - Math.exp(-delta / 1050);
+
+    lightX += (cursorX - lightX) * leadEase;
+    lightY += (cursorY - lightY) * leadEase;
+    trailX1 += (lightX - trailX1) * trailEase1;
+    trailY1 += (lightY - trailY1) * trailEase1;
+    trailX2 += (trailX1 - trailX2) * trailEase2;
+    trailY2 += (trailY1 - trailY2) * trailEase2;
+
     cursorLight.style.setProperty('--cursor-x', `${lightX}px`);
     cursorLight.style.setProperty('--cursor-y', `${lightY}px`);
+    cursorLight.style.setProperty('--trail-x-1', `${trailX1}px`);
+    cursorLight.style.setProperty('--trail-y-1', `${trailY1}px`);
+    cursorLight.style.setProperty('--trail-x-2', `${trailX2}px`);
+    cursorLight.style.setProperty('--trail-y-2', `${trailY2}px`);
 
-    if (Math.abs(cursorX - lightX) > 0.2 || Math.abs(cursorY - lightY) > 0.2) {
+    const stillMoving =
+      Math.abs(cursorX - lightX) > 0.25 || Math.abs(cursorY - lightY) > 0.25 ||
+      Math.abs(lightX - trailX1) > 0.25 || Math.abs(lightY - trailY1) > 0.25 ||
+      Math.abs(trailX1 - trailX2) > 0.25 || Math.abs(trailY1 - trailY2) > 0.25;
+
+    if (stillMoving) {
       cursorFrame = window.requestAnimationFrame(animateCursorLight);
     } else {
       cursorFrame = undefined;
@@ -27,7 +52,10 @@ if (!reducedMotion && finePointer.matches) {
     cursorX = event.clientX;
     cursorY = event.clientY;
     document.body.classList.add('has-cursor-light');
-    if (!cursorFrame) cursorFrame = window.requestAnimationFrame(animateCursorLight);
+    if (!cursorFrame) {
+      previousTime = performance.now();
+      cursorFrame = window.requestAnimationFrame(animateCursorLight);
+    }
   }, { passive: true });
 
   document.documentElement.addEventListener('mouseleave', () => {
